@@ -5,7 +5,12 @@ from .utils.stock import Stock
 
 def home(request):
     tesla = Stock("Tesla", "TSLA")
-    stocks = [tesla]
-    context = {'stocks' : stocks}
+    dates = []
+    closes = []
+    prices = tesla.getPrices()
+    for date in prices.index:
+        dates.append(str(date))
+        closes.append(prices['Close'][date])
+    context = {'stock' : tesla, 'labels' : dates, 'data' : closes}
     return render(request, 'stocks/home.html', context)
 
