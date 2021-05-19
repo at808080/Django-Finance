@@ -11,6 +11,6 @@ def home(request):
     for date in prices.index:
         dates.append(str(date))
         closes.append(prices['Close'][date])
-    context = {'stock' : tesla, 'labels' : dates, 'data' : closes}
+    context = {'stock' : tesla, 'description' : tesla.getInfoFromTicker('longBusinessSummary'), 'labels' : dates, 'data' : closes}
     return render(request, 'stocks/home.html', context)
 

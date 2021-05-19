@@ -9,6 +9,9 @@ class Stock:
         self.name = name
         self.ticker = ticker
 
+    def getName(self):
+        return self.name
+
     def getPrices(self):
         return data.get_data_yahoo(self.ticker)
 
@@ -17,6 +20,9 @@ class Stock:
 
     def getFinancials(self):
         return self.getTicker().financials
+
+    def getInfoFromTicker(self, infokey_):
+        return self.getTicker().info[infokey_]
 
     def getBalanceSheet(self):
         return self.getTicker().balance_sheet
