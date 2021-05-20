@@ -1,0 +1,22 @@
+{% extends "stocks/basetemplate.html" %}
+{% block content %}
+    <h1>This is the login page</h1>
+    <div>
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-grop">
+                <legend class="border-botton mb-4">Log in</legend>
+                {{ form.as_p }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type=submit>Login></button>
+            </div>
+        </form>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Need an account? <a class="ml-2" href="{% url 'register' %}">Sign Up</a>
+            </small>
+        </div>
+    </div>
+
+{% endblock content %}
