@@ -1,0 +1,12 @@
+{% extends "stocks/basetemplate.html" %}
+{% block content %}
+    <h1>This is the logout page</h1>
+    <div>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                You have been logged out of your account. <a class="ml-2" href="{% url 'login' %}">Log back in</a>
+            </small>
+        </div>
+    </div>
+
+{% endblock content %}
