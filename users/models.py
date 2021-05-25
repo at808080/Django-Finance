@@ -1,6 +1,15 @@
+import string
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
+#from djongo import models as models_djongo
 from django.contrib.auth.models import User
 from PIL import Image
+from django.forms import CharField
+
+from djongo import models as models_djongo
+from django.contrib.postgres.fields import ArrayField
+
+from stocks.models import Stock
 
 # Create your models here.
 
@@ -9,10 +18,12 @@ class Profile(models.Model):
 
     image = models.ImageField(default='default.jpg', upload_to='profile_pictures') #default image is a manually added static file in the media/profile_pictures directory
 
+    stocks = models.ManyToManyField(Stock)
+    
     def __str__(self):
         return f'{self.user.username} Profile'
 
-    def save(self):
+    def save(self): 
         super().save()
         ii = Image.open(self.image.path) #restricting profile images to a 240x240 size
         if ii.width > 240 or ii.height > 240:
