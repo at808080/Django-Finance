@@ -4,7 +4,7 @@ from djongo import models as models_djongo
 
 # Create your models here.
 
-class Stock(models.Model):
+class Stock(models_djongo.Model):
     name = models_djongo.CharField(max_length=50)
     ticker = models_djongo.CharField(max_length=10)
     

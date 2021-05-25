@@ -1,0 +1,14 @@
+{% extends "stocks/basetemplate.html" %}
+{% block content %}
+    <h2 >Home page</h2>
+    <h2>Stocks in watchlist include: </h2>
+
+    {% for stock in stocks %}
+        
+        <p > {{ stock.getTicker }}</p>
+
+    {% endfor %}
+    
+    </script>
+
+{% endblock content %}

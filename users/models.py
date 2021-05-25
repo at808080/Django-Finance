@@ -18,7 +18,8 @@ class Profile(models.Model):
 
     image = models.ImageField(default='default.jpg', upload_to='profile_pictures') #default image is a manually added static file in the media/profile_pictures directory
 
-    stocks = models.ManyToManyField(Stock)
+    #stocks = models_djongo.ManyToManyField(Stock)
+    stockss = models_djongo.CharField(default="", max_length=200)
     
     def __str__(self):
         return f'{self.user.username} Profile'

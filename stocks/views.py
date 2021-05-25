@@ -8,11 +8,23 @@ def home(request):
     stocks = []
     for stock in StockModel.objects.all():
         stocks.append(Stock(stock.name, stock.ticker))
+    '''
     print(request.user)
     print(request.user.profile)
     print(request.user.profile.stocks)
+    '''
     context = {'stocks' : stocks}
     return render(request, 'stocks/home.html', context)
+
+def watchlist(request):
+    stocks = [] 
+    for stock in (str(request.user.profile.stockss).split(";")[:-1]):
+        stock_ = Stock("", stock)
+        stocks.append(stock_)
+   
+    context = {'stocks' : stocks}
+    
+    return render(request, 'stocks/watchlist.html', context)
 
 
 
@@ -31,7 +43,7 @@ def stock(request):
     stocks2 = request.user.profile.stocks.all()
     print(stocks2)
     '''
-
+    #print(str(request.user.profile.stockss).split(";")[:-1])
     tesla = Stock("Tesla", "TSLA")
     dates = []
     closes = []
