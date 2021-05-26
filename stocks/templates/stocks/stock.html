@@ -5,11 +5,15 @@
     <p > {{ description }}</p>
 
 
-
-    <canvas id="myChart" width="400" height="200"></canvas>
+    <h3>Prices</h3>
+    <canvas id="prices_chart" width="400" height="200"></canvas>
+    <hr>
+    <h3>Volatility</h3>
+    <canvas id="absolute_true_range_chart" width="400" height="200"></canvas>
     <script>
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
+        //prices
+    var ctx_prices = document.getElementById('prices_chart').getContext('2d');
+    var prices_chart = new Chart(ctx_prices, {
         type: 'line',
         data: {
             labels: {{labels|safe}},
@@ -43,6 +47,47 @@
             }
         }
     });
+
+        //volatility
+    var ctx_absolute_true_range = document.getElementById('absolute_true_range_chart').getContext('2d');
+    var absolute_true_range_chart = new Chart(ctx_absolute_true_range, {
+        type: 'line',
+        data: {
+            labels: {{labels|safe}},
+            datasets: [{
+                label: '14 Day Average True Range Volatility (%): ',
+                data: {{atr|safe}},
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
     </script>
+
+    
+ 
+
 
 {% endblock content %}

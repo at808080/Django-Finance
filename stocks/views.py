@@ -2,6 +2,10 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .utils.stock import Stock
 from .models import Stock as StockModel
+
+#finance
+import numpy as np
+import pandas as pd
 # Create your views here.
 
 def home(request):
@@ -45,12 +49,55 @@ def stock(request):
     '''
     #print(str(request.user.profile.stockss).split(";")[:-1])
     tesla = Stock("Tesla", "TSLA")
+
+    '''
+    STOCK PRICES
+    '''
     dates = []
     closes = []
     prices = tesla.getPrices()
+    print(prices.head())
     for date in prices.index:
         dates.append(str(date))
         closes.append(prices['Close'][date])
-    context = {'stock' : tesla, 'description' : tesla.getInfoFromTicker('longBusinessSummary'), 'labels' : dates, 'data' : closes}
+
+    '''
+    VOLATILITY
+    '''
+    relative_absolute_true_range = []
+    highs = prices['High']
+    lows = prices['Low']
+    previous_closes = prices['Close'].shift() #pandas.DataFrame.shift() moves index using default value of 1 to take the previous day's close
+    high_minus_low = highs - lows
+    highs_minus_closes = np.abs(highs - previous_closes)
+    lows_minus_closes = np.abs(lows - previous_closes)
+    absolutes = pd.concat([high_minus_low, highs_minus_closes, lows_minus_closes], axis=1)
+    #true range
+    tr = np.max(absolutes, axis=1)
+    #absolute true range
+    atr = pd.DataFrame(data=tr.rolling(14).sum()/14, index=prices.index) #rolling applies a function to a rolling window (in this case sum to a window of length 14) and returns a new dataframe with the result
+
+    print(type(atr))
+    atr.columns=['ATR']
+    atr.fillna(0) #set NaN rows missed during the rolling window sum to zero
+    for date in atr.index:
+        print('test ' + str(type(date)) + ' ' + str(type(atr.index[0])))
+        if date not in atr.index:
+            print(str(date) + ' not in index...')
+        else:
+            relative_absolute_true_range.append(str(100*atr['ATR'][date]/previous_closes.iloc[-1])) #calculate the relative ATR by dividing by most recent stock price close
+
+    closes2 = []
+    for c in closes:
+        closes2.append(c*-1)
+    #print(str(len(absolute_true_range)) + ' ' + str(len(dates)))
+    '''
+    BUILD CONTEXT AND RETURN
+    '''
+    context = {'stock' : tesla, 
+              'description' : tesla.getInfoFromTicker('longBusinessSummary'), 
+              'labels' : dates, 
+              'data' : closes,
+              'atr' : relative_absolute_true_range}
     return render(request, 'stocks/stock.html', context)
 
