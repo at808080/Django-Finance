@@ -11,7 +11,10 @@ import pandas as pd
 def home(request):
     stocks = []
     for stock in StockModel.objects.all():
-        stocks.append(Stock(stock.name, stock.ticker))
+        stock_ = Stock(stock.name, stock.ticker)
+        stock_.setDBID(stock.id)
+        stocks.append(stock_)
+        
     '''
     print(request.user)
     print(request.user.profile)
@@ -22,17 +25,21 @@ def home(request):
 
 def watchlist(request):
     stocks = [] 
-    for stock in (str(request.user.profile.stockss).split(";")[:-1]):
-        stock_ = Stock("", stock)
+    urls = {}
+    for stock in (str(request.user.profile.stocks).split(";")[:-1]):
+        stock_ = Stock(StockModel.objects.filter(ticker=stock).first().name, stock)
+        stock_.setDBID(StockModel.objects.filter(ticker=stock).first().id)
         stocks.append(stock_)
+        urls[str(stock_.ticker)] = "stock/" + str(StockModel.objects.filter(ticker=stock).first().id) + "/"
    
-    context = {'stocks' : stocks}
+    context = {'stocks' : stocks, 
+               'urls' : urls}
     
     return render(request, 'stocks/watchlist.html', context)
 
 
 
-def stock(request):
+def stock(request, id):
     '''
     stocks = []
     for stock in StockModel.objects.all():
@@ -47,15 +54,16 @@ def stock(request):
     stocks2 = request.user.profile.stocks.all()
     print(stocks2)
     '''
-    #print(str(request.user.profile.stockss).split(";")[:-1])
-    tesla = Stock("Tesla", "TSLA")
+    #print(str(request.user.profile.stocks).split(";")[:-1])
+    stock = StockModel.objects.get(id = id)
+    stock_object = Stock(stock.name, stock.ticker)
 
     '''
     STOCK PRICES
     '''
     dates = []
     closes = []
-    prices = tesla.getPrices()
+    prices = stock_object.getPrices()
     print(prices.head())
     for date in prices.index:
         dates.append(str(date))
@@ -81,7 +89,7 @@ def stock(request):
     atr.columns=['ATR']
     atr.fillna(0) #set NaN rows missed during the rolling window sum to zero
     for date in atr.index:
-        print('test ' + str(type(date)) + ' ' + str(type(atr.index[0])))
+        #print('test ' + str(type(date)) + ' ' + str(type(atr.index[0])))
         if date not in atr.index:
             print(str(date) + ' not in index...')
         else:
@@ -94,8 +102,8 @@ def stock(request):
     '''
     BUILD CONTEXT AND RETURN
     '''
-    context = {'stock' : tesla, 
-              'description' : tesla.getInfoFromTicker('longBusinessSummary'), 
+    context = {'stock' : stock_object, 
+              'description' : stock_object.getInfoFromTicker('longBusinessSummary'), 
               'labels' : dates, 
               'data' : closes,
               'atr' : relative_absolute_true_range}

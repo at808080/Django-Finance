@@ -8,9 +8,19 @@ class Stock:
     def __init__(self, name, ticker):
         self.name = name
         self.ticker = ticker
+        self.dbID = ""
 
     def getName(self):
         return self.name
+
+    def getTickerInitials(self):
+        return self.ticker
+
+    def setDBID(self, id_):
+        self.dbID = id_
+
+    def getDBID(self):
+        return self.dbID
 
     def getPrices(self):
         return data.get_data_yahoo(self.ticker)

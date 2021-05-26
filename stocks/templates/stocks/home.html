@@ -6,8 +6,7 @@
 
 {% for stock in stocks %}
     
-    <p > {{ stock.getName }}</p>
-    <p > {{ description }}</p>
+    <p>{{ stock.getName }} <a href={% url 'stocks-stock' stock.getDBID %}>{{ stock.getTickerInitials }}</a></p>
 
 {% endfor %}
 

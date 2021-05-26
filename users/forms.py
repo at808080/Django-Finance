@@ -21,4 +21,4 @@ class ProfileUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Profile #create a new User object when the form validates
-        fields = ['image'] #the fields that will be displayed on the form
+        fields = ['image', 'stocks'] #the fields that will be displayed on the form
