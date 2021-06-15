@@ -31,6 +31,15 @@ class Stock:
     def getFinancials(self):
         return self.getTicker().financials
 
+    def getFinancialsSummary(self):
+        fins_ = self.getFinancials()
+        cols_ = fins_.columns()
+        fins_ = fins_[cols_[0]]
+        summ_ = {}
+        summ_['Assets'] = fins_['Total Assets']
+        summ_['Liabilities'] = fins_['Total Liab']
+        summ_['Equity'] = fins_['Total Stockholder Equity']
+
     def getInfoFromTicker(self, infokey_):
         return self.getTicker().info[infokey_]
 
