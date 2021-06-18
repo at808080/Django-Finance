@@ -2,13 +2,27 @@
 {% block content %}
     <h2 >{{ stock.getName }}</h2>
     <p > {{ description }}</p>
+    <p>
+        Returns:
+        <ul>
+            <li>7 Day: {{ 7dayreturn }} </li>
+            <li>30 Day: {{ 30dayreturn }} </li>
+            <li>180 Day: {{ 180dayreturn }} </li>
+            <li>365 Day: {{ 365dayreturn }} </li>
+          </ul>
+    </p>
+    
 
 
     <h3>Prices</h3>
     <canvas id="prices_chart" width="400" height="200"></canvas>
     <hr>
+    <h3>Growth</h3>
+    <canvas id="growth_chart" width="400" height="200"></canvas>
+    <hr>
     <h3>Volatility</h3>
     <canvas id="absolute_true_range_chart" width="400" height="200"></canvas>
+    
     <script>
         //prices
     var ctx_prices = document.getElementById('prices_chart').getContext('2d');
@@ -19,6 +33,43 @@
             datasets: [{
                 label: 'Price: ',
                 data: {{data|safe}},
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+        //growth
+        var ctx_growth = document.getElementById('growth_chart').getContext('2d');
+    var growth_chart = new Chart(ctx_growth, {
+        type: 'line',
+        data: {
+            labels: {{labels|safe}},
+            datasets: [{
+                label: 'Price: ',
+                data: {{growth|safe}},
                 backgroundColor: [
                     'rgba(255, 99, 132, 0.2)',
                     'rgba(54, 162, 235, 0.2)',

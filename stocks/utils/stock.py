@@ -40,6 +40,11 @@ class Stock:
         summ_['Liabilities'] = fins_['Total Liab']
         summ_['Equity'] = fins_['Total Stockholder Equity']
 
+    def calculateNDaysReturn(self, n):
+        prices_ = self.getPrices()
+        
+
+
     def getInfoFromTicker(self, infokey_):
         return self.getTicker().info[infokey_]
 

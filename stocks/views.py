@@ -37,6 +37,9 @@ def watchlist(request):
     
     return render(request, 'stocks/watchlist.html', context)
 
+def calculateNDaysReturn(prices_, n_):
+    return '{:.2f}%'.format((prices_['Close'][-1]/prices_['Close'][-1*n_])*100 - 100)
+        
 
 
 def stock(request, id):
@@ -58,16 +61,42 @@ def stock(request, id):
     stock = StockModel.objects.get(id = id)
     stock_object = Stock(stock.name, stock.ticker)
 
+    
+
     '''
     STOCK PRICES
     '''
     dates = []
     closes = []
     prices = stock_object.getPrices()
-    print(prices.head())
     for date in prices.index:
         dates.append(str(date))
         closes.append(prices['Close'][date])
+
+    '''
+    STOCK GROWTH
+    '''
+    growth = []
+    close_prices = prices['Close']
+    previous_close_prices = prices['Close'].shift() #pandas.DataFrame.shift() moves index using default value of 1 to take the previous day's close
+    print(type(close_prices))
+    for date in prices.index:
+        print(str(close_prices[date]) + " " + str(previous_close_prices[date]))
+        if np.isnan(close_prices[date]) or np.isnan(previous_close_prices[date]):
+            growth.append(0)
+        else:
+            growth.append(close_prices[date]/previous_close_prices[date])
+
+
+
+
+    '''
+    RETURNS
+    '''
+    days = [7, 30, 180, 365]
+    returns = {}
+    for day in days:
+        returns[str(day) + " day return"] = calculateNDaysReturn(prices, day)
 
     '''
     VOLATILITY
@@ -104,6 +133,12 @@ def stock(request, id):
     '''
     context = {'stock' : stock_object, 
               'description' : stock_object.getInfoFromTicker('longBusinessSummary'), 
+              'returns' : returns,
+              'growth' : growth,
+              '7dayreturn' : returns["7 day return"],
+              '30dayreturn' : returns["30 day return"],
+              '180dayreturn' : returns["180 day return"],
+              '365dayreturn' : returns["365 day return"],
               'labels' : dates, 
               'data' : closes,
               'atr' : relative_absolute_true_range}
